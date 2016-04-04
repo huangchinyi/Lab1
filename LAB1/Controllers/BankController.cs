@@ -7,27 +7,69 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using LAB1.Models;
+using System.IO;
+using NPOI.XSSF.UserModel;   //-- XSSF 用來產生Excel 2007檔案（.xlsx）
+using NPOI.SS.UserModel;    //-- v.1.2.4起 新增的。
 
 namespace LAB1.Controllers
 {
-    public class BankController : Controller
+    public class BankController : BaseController
     {
-        private 客戶資料Entities db = new 客戶資料Entities();
+      //  private 客戶資料Entities db = new 客戶資料Entities();
+
+        
 
         // GET: Bank
         public ActionResult Index()
         {
-            var 客戶銀行資訊 = db.客戶銀行資訊.Include(客 => 客.客戶資料).Where(p => p.是否已刪除 == false || p.是否已刪除 == null);
+            var 客戶銀行資訊 = repo客戶銀行資訊.All();
             return View(客戶銀行資訊.ToList());
         }
 
         [HttpPost]
         public ActionResult Index(string Keyword)
         {
-            var 客戶銀行資訊 = db.客戶銀行資訊.Include(客 => 客.客戶資料).Where(p => (p.是否已刪除 == false || p.是否已刪除 == null) && (p.銀行名稱.Contains( Keyword)));
+            var 客戶銀行資訊 = repo客戶銀行資訊.All(Keyword);
 
             return View(客戶銀行資訊.ToList());
         }
+
+
+        public ActionResult Download()
+        {
+
+            IWorkbook workbook = new XSSFWorkbook();
+            XSSFSheet u_sheet = (XSSFSheet)workbook.CreateSheet("銀行帳戶");
+            //   u_sheet.
+
+
+            List<客戶銀行資訊> list = repo客戶銀行資訊.All().ToList();
+
+            u_sheet.CreateRow(0).CreateCell(0).SetCellValue("銀行名稱");
+            u_sheet.GetRow(0).CreateCell(1).SetCellValue("銀行代碼");
+            u_sheet.GetRow(0).CreateCell(2).SetCellValue("分行代碼");
+            u_sheet.GetRow(0).CreateCell(3).SetCellValue("帳戶名稱");
+            u_sheet.GetRow(0).CreateCell(4).SetCellValue("帳戶號碼");
+            u_sheet.GetRow(0).CreateCell(5).SetCellValue("客戶名稱");
+           // u_sheet.GetRow(0).CreateCell(6).SetCellValue("客戶分類");
+
+            for (int i = 0; i < list.Count; i++)
+            {
+                u_sheet.CreateRow(i + 1).CreateCell(0).SetCellValue(list[i].銀行名稱);
+                u_sheet.GetRow(i + 1).CreateCell(1).SetCellValue(list[i].銀行代碼);
+                u_sheet.GetRow(i + 1).CreateCell(2).SetCellValue(list[i].分行代碼.Value);
+                u_sheet.GetRow(i + 1).CreateCell(3).SetCellValue(list[i].帳戶名稱);
+                u_sheet.GetRow(i + 1).CreateCell(4).SetCellValue(list[i].帳戶號碼);
+                u_sheet.GetRow(i + 1).CreateCell(5).SetCellValue(list[i].客戶資料.客戶名稱);
+         
+            }
+
+
+            MemoryStream ms = new MemoryStream();
+            workbook.Write(ms);
+            return File(ms.ToArray(), "application/vnd.ms-excel", "銀行資料.xlsx");
+        }
+
 
         //
 
@@ -38,7 +80,7 @@ namespace LAB1.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            客戶銀行資訊 客戶銀行資訊 = db.客戶銀行資訊.Find(id);
+            客戶銀行資訊 客戶銀行資訊 = repo客戶銀行資訊.Find(id.Value);
             if (客戶銀行資訊 == null)
             {
                 return HttpNotFound();
@@ -49,7 +91,7 @@ namespace LAB1.Controllers
         // GET: Bank/Create
         public ActionResult Create()
         {
-            ViewBag.客戶Id = new SelectList(db.客戶資料.Where(p => p.是否已刪除 == false || p.是否已刪除 == null), "Id", "客戶名稱");
+            ViewBag.客戶Id = new SelectList(repo客戶資料.All(), "Id", "客戶名稱");
             return View();
         }
 
@@ -62,12 +104,12 @@ namespace LAB1.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.客戶銀行資訊.Add(客戶銀行資訊);
-                db.SaveChanges();
+                repo客戶銀行資訊.Add(客戶銀行資訊);
+                repo客戶銀行資訊.UnitOfWork.Commit();
                 return RedirectToAction("Index");
             }
 
-            ViewBag.客戶Id = new SelectList(db.客戶資料, "Id", "客戶名稱", 客戶銀行資訊.客戶Id);
+            ViewBag.客戶Id = new SelectList(repo客戶資料.All(), "Id", "客戶名稱", 客戶銀行資訊.客戶Id);
             return View(客戶銀行資訊);
         }
 
@@ -78,12 +120,12 @@ namespace LAB1.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            客戶銀行資訊 客戶銀行資訊 = db.客戶銀行資訊.Find(id);
+            客戶銀行資訊 客戶銀行資訊 = repo客戶銀行資訊.Find(id.Value);
             if (客戶銀行資訊 == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.客戶Id = new SelectList(db.客戶資料.Where(p => p.是否已刪除 == false || p.是否已刪除 == null), "Id", "客戶名稱");
+            ViewBag.客戶Id = new SelectList(repo客戶資料.All(), "Id", "客戶名稱");
             return View(客戶銀行資訊);
         }
 
@@ -96,11 +138,12 @@ namespace LAB1.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(客戶銀行資訊).State = EntityState.Modified;
-                db.SaveChanges();
+                var dbProduct = (客戶資料Entities)repo客戶銀行資訊.UnitOfWork.Context;
+                dbProduct.Entry(客戶銀行資訊).State = EntityState.Modified;
+                repo客戶銀行資訊.UnitOfWork.Commit();
                 return RedirectToAction("Index");
             }
-            ViewBag.客戶Id = new SelectList(db.客戶資料, "Id", "客戶名稱", 客戶銀行資訊.客戶Id);
+            ViewBag.客戶Id = new SelectList(repo客戶資料.All(), "Id", "客戶名稱", 客戶銀行資訊.客戶Id);
             return View(客戶銀行資訊);
         }
 
@@ -111,7 +154,7 @@ namespace LAB1.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            客戶銀行資訊 客戶銀行資訊 = db.客戶銀行資訊.Find(id);
+            客戶銀行資訊 客戶銀行資訊 = repo客戶銀行資訊.Find(id.Value);
             if (客戶銀行資訊 == null)
             {
                 return HttpNotFound();
@@ -124,9 +167,11 @@ namespace LAB1.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            客戶銀行資訊 客戶銀行資訊 = db.客戶銀行資訊.Find(id);
+            客戶銀行資訊 客戶銀行資訊 = repo客戶銀行資訊.Find(id);
             客戶銀行資訊.是否已刪除 = true;
-            db.SaveChanges();
+
+            repo客戶銀行資訊.Delete(客戶銀行資訊);
+            repo客戶銀行資訊.UnitOfWork.Commit();
             return RedirectToAction("Index");
         }
 
@@ -134,7 +179,7 @@ namespace LAB1.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                repo客戶銀行資訊.UnitOfWork.Context.Dispose();
             }
             base.Dispose(disposing);
         }

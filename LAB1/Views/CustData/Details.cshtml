@@ -5,7 +5,11 @@
 }
 
 <h2>Details</h2>
+@using (Html.BeginForm())
+{
 
+    @Html.AntiForgeryToken()
+    
 <div>
     <h4>客戶資料</h4>
     <hr />
@@ -58,9 +62,83 @@
             @Html.DisplayFor(model => model.Email)
         </dd>
 
+        <dt>
+            @Html.DisplayNameFor(model => model.客戶分類)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.客戶分類)
+        </dd>
+
     </dl>
 </div>
 <p>
     @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
     @Html.ActionLink("Back to List", "Index")
 </p>
+
+
+    <table class="table">
+        <tr>
+            <th>
+                客戶聯絡人
+                </th>
+            <th>
+               姓名
+            </th>
+            <th>
+               Email
+            </th>
+            <th>
+                手機
+            </th>
+            <th>
+                電話
+            </th>
+
+            <th>
+              客戶名稱
+            </th>
+        
+        </tr>
+        @{
+    var data = Model.客戶聯絡人.Where(p => p.是否已刪除 == false || p.是否已刪除 == null).ToArray();
+        }
+        @for (var i = 0; i < data.Length; i++)
+        {
+            @Html.HiddenFor(modelItem => data[i].Id)
+            <tr>
+                <td>
+
+                    @Html.EditorFor(modelItem => data[i].職稱)<br />
+                    @Html.ValidationMessageFor(modelItem => data[i].職稱, "", new { @class = "text-danger" })
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => data[i].姓名)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => data[i].Email)
+                </td>
+                <td>
+
+                    @Html.EditorFor(modelItem => data[i].手機)<br />
+                    @Html.ValidationMessageFor(modelItem => data[i].手機, "", new { @class = "text-danger" })
+                </td>
+                <td>
+
+                    @Html.EditorFor(modelItem => data[i].電話)<br />
+                    @Html.ValidationMessageFor(modelItem => data[i].電話, "", new { @class = "text-danger" })
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => data[i].客戶資料.客戶名稱)
+                </td>
+              
+            </tr>
+        }
+
+    </table>
+
+    <input type="submit" value="批次更新資料" />
+
+}
