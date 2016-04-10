@@ -48,10 +48,12 @@ namespace LAB1.Models
 
     public class LoginViewModel
     {
+
         [Required]
-        [Display(Name = "電子郵件")]
-        [EmailAddress]
-        public string Email { get; set; }
+        [Display(Name = "帳號")]
+        public string Account { get; set; }
+
+
 
         [Required]
         [DataType(DataType.Password)]

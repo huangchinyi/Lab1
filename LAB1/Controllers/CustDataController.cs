@@ -9,10 +9,12 @@ using System.Web.Mvc;
 using LAB1.Models;
 using System.IO;
 using NPOI.XSSF.UserModel;   //-- XSSF 用來產生Excel 2007檔案（.xlsx）
-using NPOI.SS.UserModel;    //-- v.1.2.4起 新增的。
+using NPOI.SS.UserModel;
+using System.Web.Security;    //-- v.1.2.4起 新增的。
 
 namespace LAB1.Controllers
 {
+     [Authorize (Roles="admin")]
     public class CustDataController : BaseController
     {
        // private 客戶資料Entities db = new 客戶資料Entities();
@@ -182,11 +184,15 @@ namespace LAB1.Controllers
         // 詳細資訊，請參閱 http://go.microsoft.com/fwlink/?LinkId=317598。
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,客戶名稱,統一編號,電話,傳真,地址,Email,客戶分類")] 客戶資料 客戶資料)
+        public ActionResult Edit([Bind(Include = "Id,客戶名稱,統一編號,電話,傳真,地址,Email,客戶分類,帳號,密碼")] 客戶資料 客戶資料)
         {
             if (ModelState.IsValid)
             {
                 var dbProduct = (客戶資料Entities)repo客戶資料.UnitOfWork.Context;
+
+                客戶資料.密碼 = FormsAuthentication.HashPasswordForStoringInConfigFile(客戶資料.帳號+  客戶資料.密碼, "SHA1");
+
+
                 dbProduct.Entry(客戶資料).State = EntityState.Modified;
                 repo客戶資料.UnitOfWork.Commit();
                 return RedirectToAction("Index");

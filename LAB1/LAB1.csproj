@@ -186,6 +186,7 @@
     <Compile Include="Controllers\ContactController.cs" />
     <Compile Include="Controllers\CustDataController.cs" />
     <Compile Include="Controllers\CustListController.cs" />
+    <Compile Include="Controllers\EditProfileController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Global.asax.cs">
@@ -208,6 +209,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>CustDataModel.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Models\EditProfileViewModel.cs" />
     <Compile Include="Models\EFGeneratePartialClass.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -382,6 +384,8 @@
     <Content Include="Views\CustList\Details.cshtml" />
     <Content Include="Views\CustList\Edit.cshtml" />
     <Content Include="Views\CustList\Index.cshtml" />
+    <Content Include="Views\EditProfile\EditProfile.cshtml" />
+    <Content Include="Views\Shared\Error2.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

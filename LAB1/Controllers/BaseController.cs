@@ -7,6 +7,9 @@ using System.Web.Mvc;
 
 namespace LAB1.Controllers
 {
+
+     [HandleError(ExceptionType = typeof(InvalidOperationException), View = "Error2")]
+     [HandleError(ExceptionType = typeof(Exception), View = "Error1")]
     public class BaseController : Controller
     {
         protected 客戶資料Repository repo客戶資料

@@ -13,6 +13,7 @@ using NPOI.SS.UserModel;    //-- v.1.2.4起 新增的。
 
 namespace LAB1.Controllers
 {
+    [Authorize(Roles = "admin")]
     public class CustListController : BaseController
     {
       //  private 客戶資料Entities db = new 客戶資料Entities();

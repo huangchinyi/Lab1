@@ -23,13 +23,20 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li>@Html.ActionLink("首頁", "Index", "Home")</li>
+@if (Request.IsAuthenticated && User.IsInRole("admin"))
+{
                     <li>@Html.ActionLink("客戶資料管理", "Index", "CustData")</li>
                     <li>@Html.ActionLink("客戶聯絡人管理", "Index", "Contact")</li>
                     <li>@Html.ActionLink("客戶銀行帳戶管理", "Index", "Bank")</li>        
                     <li>@Html.ActionLink("客戶清單資訊", "Index", "CustList")</li>    
+}
+else
+{
+     
+}
                     
                 </ul>
-               
+                @Html.Partial("_LoginPartial")
             </div>
         </div>
     </div>

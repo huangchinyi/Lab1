@@ -51,7 +51,7 @@
     <tr>
         <td>
            
-            @Html.EditorFor(modelItem => data[i].職稱)<br />
+            @Html.DisplayFor(modelItem => data[i].職稱)<br />
             @Html.ValidationMessageFor(modelItem => data[i].職稱, "", new { @class = "text-danger" })
         </td>
         <td>
@@ -62,12 +62,12 @@
         </td>
         <td>
          
-            @Html.EditorFor(modelItem => data[i].手機)<br />
+            @Html.DisplayFor(modelItem => data[i].手機)<br />
             @Html.ValidationMessageFor(modelItem => data[i].手機, "", new { @class = "text-danger" })
         </td>
         <td>
            
-            @Html.EditorFor(modelItem => data[i].電話)<br />
+            @Html.DisplayFor(modelItem => data[i].電話)<br />
             @Html.ValidationMessageFor(modelItem => data[i].電話, "", new { @class = "text-danger" })
         </td>
    
@@ -84,6 +84,6 @@
 
 </table>
 
-    <input type="submit" value="批次更新資料" />
+   
    
 }

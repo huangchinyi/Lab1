@@ -3,10 +3,23 @@ namespace LAB1.Models
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
+    using System.Linq;
     
     [MetadataType(typeof(客戶資料MetaData))]
-    public partial class 客戶資料
+    public partial class 客戶資料 : IValidatableObject
     {
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+
+            客戶資料Entities dd = new 客戶資料Entities();
+            客戶資料 data = dd.客戶資料.Where(p => p.帳號 == this.帳號 && (p.是否已刪除 == false || p.是否已刪除 == null)).Where(p => p.Id != this.Id).FirstOrDefault();
+            if (data != null)
+            {
+                yield return new ValidationResult("帳號已有人使用", new string[] { "帳號" });
+            }
+
+            yield return ValidationResult.Success;
+        }
     }
     
     public partial class 客戶資料MetaData

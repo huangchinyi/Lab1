@@ -298,14 +298,14 @@ namespace LAB1.Controllers
         }
 
         //
-        // POST: /Manage/LinkLogin
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult LinkLogin(string provider)
-        {
-            // 要求重新導向至外部登入提供者，以連結目前使用者的登入
-            return new AccountController.ChallengeResult(provider, Url.Action("LinkLoginCallback", "Manage"), User.Identity.GetUserId());
-        }
+        //// POST: /Manage/LinkLogin
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult LinkLogin(string provider)
+        //{
+        //    // 要求重新導向至外部登入提供者，以連結目前使用者的登入
+        //    return new AccountController.ChallengeResult(provider, Url.Action("LinkLoginCallback", "Manage"), User.Identity.GetUserId());
+        //}
 
         //
         // GET: /Manage/LinkLoginCallback
