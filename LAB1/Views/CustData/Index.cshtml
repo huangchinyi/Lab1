@@ -5,8 +5,7 @@
 }
 
 <h2>Index</h2>
-
-@using (Html.BeginForm())
+@using (Html.BeginForm("Index", "CustData", FormMethod.Post))
 {
     @Html.AntiForgeryToken()
 
@@ -22,25 +21,33 @@
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.客戶名稱)
+            @Html.ActionLink("客戶名稱", "Index", new { keyword = "", 欄位 = "客戶名稱", sort = ViewBag.sort })
+           
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.統一編號)
+            @Html.ActionLink("統一編號", "Index", new { keyword = "", 欄位 = "統一編號", sort = ViewBag.sort })
+      
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.電話)
+            @Html.ActionLink("電話", "Index", new { keyword = "", 欄位 = "電話", sort = ViewBag.sort })
+
+
+         
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.傳真)
+            @Html.ActionLink("傳真", "Index", new { keyword = "", 欄位 = "傳真", sort = ViewBag.sort })
+     
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.地址)
+            @Html.ActionLink("地址", "Index", new { keyword = "", 欄位 = "地址", sort = ViewBag.sort })
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Email)
+            @Html.ActionLink("Email", "Index", new { keyword = "", 欄位 = "Email", sort = ViewBag.sort })
+
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.客戶分類)
+            @Html.ActionLink("客戶分類", "Index", new { keyword = "", 欄位 = "客戶分類", sort = ViewBag.sort })
+
         </th>
         <th></th>
     </tr>

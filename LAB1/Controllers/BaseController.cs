@@ -8,6 +8,7 @@ using System.Web.Mvc;
 namespace LAB1.Controllers
 {
 
+    [計算Action的執行時間Attribute]
      [HandleError(ExceptionType = typeof(InvalidOperationException), View = "Error2")]
      [HandleError(ExceptionType = typeof(Exception), View = "Error1")]
     public class BaseController : Controller

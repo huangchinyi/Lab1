@@ -20,12 +20,114 @@ namespace LAB1.Controllers
        // private 客戶資料Entities db = new 客戶資料Entities();
 
         // GET: CustData
-        public ActionResult Index()
-        {
-            var 客戶資料 = repo客戶資料.All();
+         public ActionResult Index(string keyword, string 欄位, string sort)
+         {
 
-            return View(客戶資料.ToList());
-        }
+             if (sort == null)
+             {
+                 keyword = "";
+                 欄位 = "職稱";
+                 sort = "ASC";
+             }
+
+
+
+             var 客戶資料 = repo客戶資料.All();
+             switch (欄位)
+             {
+                 case "客戶名稱":
+                     if (sort == "DESC")
+                     {
+                         客戶資料 = 客戶資料.OrderByDescending(s => s.客戶名稱);
+                         sort = "ASC";
+                     }
+                     else
+                     {
+                         客戶資料 = 客戶資料.OrderBy(s => s.客戶名稱);
+                         sort = "DESC";
+                     }
+                     break;
+                 case "Email":
+                     if (sort == "DESC")
+                     {
+                         客戶資料 = 客戶資料.OrderByDescending(s => s.Email);
+                         sort = "ASC";
+                     }
+                     else
+                     {
+                         客戶資料 = 客戶資料.OrderBy(s => s.Email);
+                         sort = "DESC";
+                     }
+                     break;
+                 case "地址":
+                     if (sort == "DESC")
+                     {
+                         客戶資料 = 客戶資料.OrderByDescending(s => s.地址);
+                         sort = "ASC";
+                     }
+                     else
+                     {
+                         客戶資料 = 客戶資料.OrderBy(s => s.地址);
+                         sort = "DESC";
+                     }
+                     break;
+                 case "客戶分類":
+                     if (sort == "DESC")
+                     {
+                         客戶資料 = 客戶資料.OrderByDescending(s => s.客戶分類);
+                         sort = "ASC";
+                     }
+                     else
+                     {
+                         客戶資料 = 客戶資料.OrderBy(s => s.客戶分類);
+                         sort = "DESC";
+                     }
+                     break;
+                 case "統一編號":
+                     if (sort == "DESC")
+                     {
+                         客戶資料 = 客戶資料.OrderByDescending(s => s.統一編號);
+                         sort = "ASC";
+                     }
+                     else
+                     {
+                         客戶資料 = 客戶資料.OrderBy(s => s.統一編號);
+                         sort = "DESC";
+                     }
+                     break;
+                 case "電話":
+                     if (sort == "DESC")
+                     {
+                         客戶資料 = 客戶資料.OrderByDescending(s => s.電話);
+                         sort = "ASC";
+                     }
+                     else
+                     {
+                         客戶資料 = 客戶資料.OrderBy(s => s.電話);
+                         sort = "DESC";
+                     }
+                     break;
+                 case "傳真":
+                     if (sort == "DESC")
+                     {
+                         客戶資料 = 客戶資料.OrderByDescending(s => s.傳真);
+                         sort = "ASC";
+                     }
+                     else
+                     {
+                         客戶資料 = 客戶資料.OrderBy(s => s.傳真);
+                         sort = "DESC";
+                     }
+                     break;
+
+
+             }
+
+             ViewBag.sort = sort;
+
+
+             return View(客戶資料.ToList());
+         }
 
         [HttpPost]
         public ActionResult Index(string Keyword)

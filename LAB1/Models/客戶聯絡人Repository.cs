@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Web.Mvc;
 	
 namespace LAB1.Models
 {   
@@ -20,6 +21,21 @@ namespace LAB1.Models
         {
             return this.All().FirstOrDefault(p => p.Id == id);
         }
+
+    public IEnumerable<SelectListItem> getTitle()
+    {
+
+        return this.All()
+            .AsQueryable()
+            .Select(s => new SelectListItem()
+            {
+                Value = s.職稱,
+                Text = s.職稱
+            })
+                 ;
+
+    }
+
 
 
         public override void Delete(客戶聯絡人 entity)

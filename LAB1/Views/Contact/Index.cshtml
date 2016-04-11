@@ -4,41 +4,52 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Index</h2>
-@using (Html.BeginForm())
-{
-    @Html.AntiForgeryToken()
 
+
+<h2>Index</h2>
+@using (Html.BeginForm("Index","Contact", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()    
     <p>
         @Html.ActionLink("Create New", "Create")
     </p>
     <p>
         姓名:
         @Html.TextBox("Keyword")
+        職稱
+       @Html.DropDownList("職稱",(IEnumerable<SelectListItem>)ViewBag.職稱列表,"全部")
         <input type="submit" value="Query" class="btn btn-default" />
         @Html.ActionLink("Download Excel", "Download")
     </p>
-
+   
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.職稱)
+           
+            @Html.ActionLink("職稱", "Index", new { keyword="", 欄位 = "職稱", sort = ViewBag.sort })
+            
+
+        
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.姓名)
+            @Html.ActionLink("姓名", "Index", new { keyword = "", 欄位 = "姓名", sort = ViewBag.sort })
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Email)
+           
+            @Html.ActionLink("Email", "Index", new { keyword = "", 欄位 = "Email", sort = ViewBag.sort })
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.手機)
+        
+            @Html.ActionLink("手機", "Index", new { keyword = "", 欄位 = "手機", sort = ViewBag.sort })
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.電話)
+         
+                @Html.ActionLink("電話", "Index", new { keyword = "", 欄位 = "電話", sort = ViewBag.sort })
         </th>
        
         <th>
-            @Html.DisplayNameFor(model => model.客戶資料.客戶名稱)
+           
+            @Html.ActionLink("客戶名稱", "Index", new { keyword = "", 欄位 = "客戶名稱", sort = ViewBag.sort })
         </th>
         <th></th>
     </tr>
