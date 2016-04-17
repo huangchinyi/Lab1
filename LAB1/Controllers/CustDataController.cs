@@ -11,6 +11,7 @@ using System.IO;
 using NPOI.XSSF.UserModel;   //-- XSSF 用來產生Excel 2007檔案（.xlsx）
 using NPOI.SS.UserModel;
 using System.Web.Security;    //-- v.1.2.4起 新增的。
+using PagedList;
 
 namespace LAB1.Controllers
 {
@@ -20,122 +21,117 @@ namespace LAB1.Controllers
        // private 客戶資料Entities db = new 客戶資料Entities();
 
         // GET: CustData
-         public ActionResult Index(string keyword, string 欄位, string sort)
+        public ActionResult Index(string Keyword, string sortColumn, string sortOrder, int page=1)
          {
 
-             if (sort == null)
+             if (sortOrder == null)
              {
-                 keyword = "";
-                 欄位 = "職稱";
-                 sort = "ASC";
+                 Keyword = "";
+                 sortColumn = "客戶名稱";
+                 sortOrder = "ASC";
              }
 
 
 
-             var 客戶資料 = repo客戶資料.All();
-             switch (欄位)
+             var 客戶資料 = repo客戶資料.All(Keyword);
+             switch (sortColumn)
              {
                  case "客戶名稱":
-                     if (sort == "DESC")
+                     if (sortOrder == "DESC")
                      {
                          客戶資料 = 客戶資料.OrderByDescending(s => s.客戶名稱);
-                         sort = "ASC";
+                         sortOrder = "ASC";
                      }
                      else
                      {
                          客戶資料 = 客戶資料.OrderBy(s => s.客戶名稱);
-                         sort = "DESC";
+                         sortOrder = "DESC";
                      }
                      break;
                  case "Email":
-                     if (sort == "DESC")
+                     if (sortOrder == "DESC")
                      {
                          客戶資料 = 客戶資料.OrderByDescending(s => s.Email);
-                         sort = "ASC";
+                         sortOrder = "ASC";
                      }
                      else
                      {
                          客戶資料 = 客戶資料.OrderBy(s => s.Email);
-                         sort = "DESC";
+                         sortOrder = "DESC";
                      }
                      break;
                  case "地址":
-                     if (sort == "DESC")
+                     if (sortOrder == "DESC")
                      {
                          客戶資料 = 客戶資料.OrderByDescending(s => s.地址);
-                         sort = "ASC";
+                         sortOrder = "ASC";
                      }
                      else
                      {
                          客戶資料 = 客戶資料.OrderBy(s => s.地址);
-                         sort = "DESC";
+                         sortOrder = "DESC";
                      }
                      break;
                  case "客戶分類":
-                     if (sort == "DESC")
+                     if (sortOrder == "DESC")
                      {
                          客戶資料 = 客戶資料.OrderByDescending(s => s.客戶分類);
-                         sort = "ASC";
+                         sortOrder = "ASC";
                      }
                      else
                      {
                          客戶資料 = 客戶資料.OrderBy(s => s.客戶分類);
-                         sort = "DESC";
+                         sortOrder = "DESC";
                      }
                      break;
                  case "統一編號":
-                     if (sort == "DESC")
+                     if (sortOrder == "DESC")
                      {
                          客戶資料 = 客戶資料.OrderByDescending(s => s.統一編號);
-                         sort = "ASC";
+                         sortOrder = "ASC";
                      }
                      else
                      {
                          客戶資料 = 客戶資料.OrderBy(s => s.統一編號);
-                         sort = "DESC";
+                         sortOrder = "DESC";
                      }
                      break;
                  case "電話":
-                     if (sort == "DESC")
+                     if (sortOrder == "DESC")
                      {
                          客戶資料 = 客戶資料.OrderByDescending(s => s.電話);
-                         sort = "ASC";
+                         sortOrder = "ASC";
                      }
                      else
                      {
                          客戶資料 = 客戶資料.OrderBy(s => s.電話);
-                         sort = "DESC";
+                         sortOrder = "DESC";
                      }
                      break;
                  case "傳真":
-                     if (sort == "DESC")
+                     if (sortOrder == "DESC")
                      {
                          客戶資料 = 客戶資料.OrderByDescending(s => s.傳真);
-                         sort = "ASC";
+                         sortOrder = "ASC";
                      }
                      else
                      {
                          客戶資料 = 客戶資料.OrderBy(s => s.傳真);
-                         sort = "DESC";
+                         sortOrder = "DESC";
                      }
                      break;
 
 
              }
 
-             ViewBag.sort = sort;
+             ViewBag.sort = sortOrder;
+             ViewBag.page = page;
 
+             var data = 客戶資料.ToPagedList(page, 5);
+             return View(data);
 
-             return View(客戶資料.ToList());
+             
          }
-
-        [HttpPost]
-        public ActionResult Index(string Keyword)
-        {
-            var 客戶資料 = repo客戶資料.All(Keyword);
-
-            return View(客戶資料.ToList());
-        }
 
         // GET: CustData/Details/5
         public ActionResult Details(int? id)
@@ -187,11 +183,12 @@ namespace LAB1.Controllers
         public ActionResult Create()
         {
 
-            List<string> list = new List<string>();
-            list.Add("好客戶");
-            list.Add("壞客戶");
+            var 客戶分類 = new List<SelectListItem>();
+            客戶分類.Add(new SelectListItem() { Value = "好客戶", Text = "好客戶" });
+            客戶分類.Add(new SelectListItem() { Value = "壞客戶", Text = "壞客戶" });
+            ViewBag.客戶分類 = new SelectList(客戶分類, "Value", "Text", "客戶分類");
 
-            ViewBag.客戶分類 = new SelectList(list);
+          
 
             return View();
         }
@@ -201,21 +198,20 @@ namespace LAB1.Controllers
         // 詳細資訊，請參閱 http://go.microsoft.com/fwlink/?LinkId=317598。
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,客戶名稱,統一編號,電話,傳真,地址,Email,是否已刪除,客戶分類")] 客戶資料 客戶資料)
+        public ActionResult Create([Bind(Include = "Id,客戶名稱,統一編號,電話,傳真,地址,Email,是否已刪除,客戶分類,帳號,密碼")] 客戶資料 客戶資料)
         {
             if (ModelState.IsValid)
             {
+                客戶資料.密碼 = FormsAuthentication.HashPasswordForStoringInConfigFile(客戶資料.帳號 + 客戶資料.密碼, "SHA1");
                 repo客戶資料.Add(客戶資料);
                 repo客戶資料.UnitOfWork.Commit();
                 return RedirectToAction("Index");
             }
 
-            List<string> list = new List<string>();
-            list.Add("好客戶");
-            list.Add("壞客戶");
-
-            ViewBag.客戶分類 = new SelectList(list);
-
+            var 客戶分類 = new List<SelectListItem>();
+            客戶分類.Add(new SelectListItem() { Value = "好客戶", Text = "好客戶" });
+            客戶分類.Add(new SelectListItem() { Value = "壞客戶", Text = "壞客戶" });
+            ViewBag.客戶分類 = new SelectList(客戶分類, "Value", "Text", "客戶分類");
 
             return View(客戶資料);
         }
@@ -271,13 +267,11 @@ namespace LAB1.Controllers
                 return HttpNotFound();
             }
 
-   
-            List<string> list = new List<string>();
-            list.Add("好客戶");
-            list.Add("壞客戶");
 
-            ViewBag.客戶分類 = new SelectList(list);
-
+            var 客戶分類 = new List<SelectListItem>();
+            客戶分類.Add(new SelectListItem() { Value = "好客戶", Text = "好客戶" });
+            客戶分類.Add(new SelectListItem() { Value = "壞客戶", Text = "壞客戶" });
+            ViewBag.客戶分類 = new SelectList(客戶分類, "Value", "Text", "客戶分類");
             return View(客戶資料);
         }
 
@@ -299,6 +293,12 @@ namespace LAB1.Controllers
                 repo客戶資料.UnitOfWork.Commit();
                 return RedirectToAction("Index");
             }
+
+            var 客戶分類 = new List<SelectListItem>();
+            客戶分類.Add(new SelectListItem() { Value = "好客戶", Text = "好客戶" });
+            客戶分類.Add(new SelectListItem() { Value = "壞客戶", Text = "壞客戶" });
+            ViewBag.客戶分類 = new SelectList(客戶分類, "Value", "Text", "客戶分類");
+
             return View(客戶資料);
         }
 

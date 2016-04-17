@@ -1,53 +1,77 @@
 ﻿@model IEnumerable<LAB1.Models.客戶資料>
+@using PagedList
+@using PagedList.Mvc
 
 @{
     ViewBag.Title = "Index";
 }
 
 <h2>Index</h2>
-@using (Html.BeginForm("Index", "CustData", FormMethod.Post))
+
+
+@section scripts
+{
+    <script>
+        $(function () {
+            $(".pagination a").on("click", function () {
+                var href = $(this).attr("href");
+                var pid = href.substring(href.indexOf('?page=') + 6);
+                document.form1.page.value = pid;
+                document.form1.submit();
+                return false;
+            });
+        });
+        function Sort(columnName, sortOrder) {
+            $("#sortColumn").val(columnName);
+            $("#sortOrder").val(sortOrder);
+            document.form1.submit();
+            return false;
+        }
+
+  
+    </script>
+}
+
+@using (Html.BeginForm("Index", "CustData", FormMethod.Get, new { name = "form1" }))
 {
     @Html.AntiForgeryToken()
-
+    @Html.Hidden("page")
+    @Html.Hidden("sortOrder")
+    @Html.Hidden("sortColumn")
     <p>
         @Html.ActionLink("Create New", "Create")
     </p>
     <p>
         客戶名稱:
-        @Html.TextBox("Keyword")
+        @Html.TextBox("Keyword", null, new { @class = "form-control" })
         <input type="submit" value="Query" class="btn btn-default" />
         @Html.ActionLink("Download Excel", "Download")
     </p>
 <table class="table">
     <tr>
         <th>
-            @Html.ActionLink("客戶名稱", "Index", new { keyword = "", 欄位 = "客戶名稱", sort = ViewBag.sort })
+  
+            @Html.ActionLink("客戶名稱", "Index", null, new { onclick = string.Format("return Sort('{0}', '{1}')", "客戶名稱", ViewBag.sort) })
            
         </th>
         <th>
-            @Html.ActionLink("統一編號", "Index", new { keyword = "", 欄位 = "統一編號", sort = ViewBag.sort })
-      
+            @Html.ActionLink("統一編號", "Index", null, new { onclick = string.Format("return Sort('{0}', '{1}')", "統一編號", ViewBag.sort) })      
         </th>
         <th>
-            @Html.ActionLink("電話", "Index", new { keyword = "", 欄位 = "電話", sort = ViewBag.sort })
-
-
-         
+            @Html.ActionLink("電話", "Index", null, new { onclick = string.Format("return Sort('{0}', '{1}')", "電話", ViewBag.sort) })   
         </th>
         <th>
-            @Html.ActionLink("傳真", "Index", new { keyword = "", 欄位 = "傳真", sort = ViewBag.sort })
-     
+            @Html.ActionLink("傳真", "Index", null, new { onclick = string.Format("return Sort('{0}', '{1}')", "傳真", ViewBag.sort) })
+           
         </th>
         <th>
-            @Html.ActionLink("地址", "Index", new { keyword = "", 欄位 = "地址", sort = ViewBag.sort })
+            @Html.ActionLink("地址", "Index", null, new { onclick = string.Format("return Sort('{0}', '{1}')", "地址", ViewBag.sort) })
         </th>
         <th>
-            @Html.ActionLink("Email", "Index", new { keyword = "", 欄位 = "Email", sort = ViewBag.sort })
-
+            @Html.ActionLink("Email", "Index", null, new { onclick = string.Format("return Sort('{0}', '{1}')", "Email", ViewBag.sort) })
         </th>
         <th>
-            @Html.ActionLink("客戶分類", "Index", new { keyword = "", 欄位 = "客戶分類", sort = ViewBag.sort })
-
+            @Html.ActionLink("客戶分類", "Index", null, new { onclick = string.Format("return Sort('{0}', '{1}')", "客戶分類", ViewBag.sort) })
         </th>
         <th></th>
     </tr>
@@ -84,4 +108,6 @@
 }
 
 </table>
+
+    @Html.PagedListPager(Model as IPagedList, p => Url.Action("Index", new { page = p }))
 }

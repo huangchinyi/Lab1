@@ -10,6 +10,7 @@ using LAB1.Models;
 using System.IO;
 using NPOI.XSSF.UserModel;   //-- XSSF 用來產生Excel 2007檔案（.xlsx）
 using NPOI.SS.UserModel;    //-- v.1.2.4起 新增的。
+using PagedList;
 
 namespace LAB1.Controllers
 {
@@ -24,105 +25,114 @@ namespace LAB1.Controllers
 
        
         // GET: Contact
-        public ActionResult Index(string keyword, string 欄位, string sort)
+        public ActionResult Index(string keyword, string sortColumn, string sortOrder, string 職稱_1, int page = 1)
+
         {
 
 
-            if (sort == null)
+            if (sortOrder == null)
             {
                 keyword = "";
-                欄位 = "職稱";
-                sort = "ASC";
+                sortColumn = "職稱";
+                sortOrder = "ASC";
+                職稱_1 = "";
             }
          
 
 
          
-            var 客戶聯絡人 = rep客戶聯絡人.All() ;
+            var 客戶聯絡人 = rep客戶聯絡人.All(keyword) ;
+
+            if (職稱_1 != "")
+            {
+               客戶聯絡人= 客戶聯絡人.Where(p => p.職稱 == 職稱_1);
+            }
             ViewBag.職稱列表 = rep客戶聯絡人.getTitle();
             //ViewBag.SortingPagingInfo = info;
 
-            switch (欄位)
+            switch (sortColumn)
             {
                 case "職稱":
-                    if (sort == "DESC")
+                    if (sortOrder == "DESC")
                     {
                         客戶聯絡人 = 客戶聯絡人.OrderByDescending(s => s.職稱);
-                        sort = "ASC";
+                        sortOrder = "ASC";
                     }
                     else
                     {
                         客戶聯絡人 = 客戶聯絡人.OrderBy(s => s.職稱);
-                        sort = "DESC";
+                        sortOrder = "DESC";
                     }
                     break;
                 case "姓名":
-                    if (sort == "DESC")
+                    if (sortOrder == "DESC")
                     {
                         客戶聯絡人 = 客戶聯絡人.OrderByDescending(s => s.姓名);
-                        sort = "ASC";
+                        sortOrder = "ASC";
                     }
                     else
                     {
                         客戶聯絡人 = 客戶聯絡人.OrderBy(s => s.姓名);
-                        sort = "DESC";
+                        sortOrder = "DESC";
                     }
                     break;
                 case "Email":
-                    if (sort == "DESC")
+                    if (sortOrder == "DESC")
                     {
                         客戶聯絡人 = 客戶聯絡人.OrderByDescending(s => s.Email);
-                        sort = "ASC";
+                        sortOrder = "ASC";
                     }
                     else
                     {
                         客戶聯絡人 = 客戶聯絡人.OrderBy(s => s.Email);
-                        sort = "DESC";
+                        sortOrder = "DESC";
                     }
                     break;
                 case "手機":
-                    if (sort == "DESC")
+                    if (sortOrder == "DESC")
                     {
                         客戶聯絡人 = 客戶聯絡人.OrderByDescending(s => s.手機);
-                        sort = "ASC";
+                        sortOrder = "ASC";
                     }
                     else
                     {
                         客戶聯絡人 = 客戶聯絡人.OrderBy(s => s.手機);
-                        sort = "DESC";
+                        sortOrder = "DESC";
                     }
                     break;
                 case "電話":
-                    if (sort == "DESC")
+                    if (sortOrder == "DESC")
                     {
                         客戶聯絡人 = 客戶聯絡人.OrderByDescending(s => s.電話);
-                        sort = "ASC";
+                        sortOrder = "ASC";
                     }
                     else
                     {
                         客戶聯絡人 = 客戶聯絡人.OrderBy(s => s.電話);
-                        sort = "DESC";
+                        sortOrder = "DESC";
                     }
                     break;
                 case "客戶名稱":
-                    if (sort == "DESC")
+                    if (sortOrder == "DESC")
                     {
                         客戶聯絡人 = 客戶聯絡人.OrderByDescending(s => s.客戶資料.客戶名稱);
-                        sort = "ASC";
+                        sortOrder = "ASC";
                     }
                     else
                     {
                         客戶聯絡人 = 客戶聯絡人.OrderBy(s => s.客戶資料.客戶名稱);
-                        sort = "DESC";
+                        sortOrder = "DESC";
                     }
                     break;
             
               
             }
 
-            ViewBag.sort = sort;
+            ViewBag.sort = sortOrder;
+            ViewBag.page = page;
 
-            return View(客戶聯絡人.ToList());
+            var data = 客戶聯絡人.ToPagedList(page, 5);
+            return View(data);
         }
 
     
@@ -165,109 +175,6 @@ namespace LAB1.Controllers
 
         
         
-
-        [HttpPost]
-        public ActionResult Index(string keyword, string 欄位, string sort,string post)
-        {
-
-
-            if (sort == null)
-            {
-                keyword = "";
-                欄位 = "職稱";
-                sort = "ASC";
-            }
-
-
-
-
-            var 客戶聯絡人 = rep客戶聯絡人.All();
-            ViewBag.職稱列表 = rep客戶聯絡人.getTitle();
-            //ViewBag.SortingPagingInfo = info;
-
-            switch (欄位)
-            {
-                case "職稱":
-                    if (sort == "DESC")
-                    {
-                        客戶聯絡人 = 客戶聯絡人.OrderByDescending(s => s.職稱);
-                        sort = "ASC";
-                    }
-                    else
-                    {
-                        客戶聯絡人 = 客戶聯絡人.OrderBy(s => s.職稱);
-                        sort = "DESC";
-                    }
-                    break;
-                case "姓名":
-                    if (sort == "DESC")
-                    {
-                        客戶聯絡人 = 客戶聯絡人.OrderByDescending(s => s.姓名);
-                        sort = "ASC";
-                    }
-                    else
-                    {
-                        客戶聯絡人 = 客戶聯絡人.OrderBy(s => s.姓名);
-                        sort = "DESC";
-                    }
-                    break;
-                case "Email":
-                    if (sort == "DESC")
-                    {
-                        客戶聯絡人 = 客戶聯絡人.OrderByDescending(s => s.Email);
-                        sort = "ASC";
-                    }
-                    else
-                    {
-                        客戶聯絡人 = 客戶聯絡人.OrderBy(s => s.Email);
-                        sort = "DESC";
-                    }
-                    break;
-                case "手機":
-                    if (sort == "DESC")
-                    {
-                        客戶聯絡人 = 客戶聯絡人.OrderByDescending(s => s.手機);
-                        sort = "ASC";
-                    }
-                    else
-                    {
-                        客戶聯絡人 = 客戶聯絡人.OrderBy(s => s.手機);
-                        sort = "DESC";
-                    }
-                    break;
-                case "電話":
-                    if (sort == "DESC")
-                    {
-                        客戶聯絡人 = 客戶聯絡人.OrderByDescending(s => s.電話);
-                        sort = "ASC";
-                    }
-                    else
-                    {
-                        客戶聯絡人 = 客戶聯絡人.OrderBy(s => s.電話);
-                        sort = "DESC";
-                    }
-                    break;
-                case "客戶名稱":
-                    if (sort == "DESC")
-                    {
-                        客戶聯絡人 = 客戶聯絡人.OrderByDescending(s => s.客戶資料.客戶名稱);
-                        sort = "ASC";
-                    }
-                    else
-                    {
-                        客戶聯絡人 = 客戶聯絡人.OrderBy(s => s.客戶資料.客戶名稱);
-                        sort = "DESC";
-                    }
-                    break;
-
-
-            }
-
-            ViewBag.sort = sort;
-
-            return View(客戶聯絡人.ToList());
-        }
-
 
         
 

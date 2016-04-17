@@ -49,6 +49,11 @@ namespace LAB1.Models
         [EmailAddress]
         public string Email { get; set; }
         public Nullable<bool> 是否已刪除 { get; set; }
+
+        [Required]
+        public string 帳號 { get; set; }
+         [Required]
+        public string 密碼 { get; set; }
     
         public virtual ICollection<客戶銀行資訊> 客戶銀行資訊 { get; set; }
         public virtual ICollection<客戶聯絡人> 客戶聯絡人 { get; set; }

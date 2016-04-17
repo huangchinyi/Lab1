@@ -11,7 +11,7 @@ namespace LAB1.Models
         public override IQueryable<客戶資料> All()
         {
 
-            return base.All().Include("客戶聯絡人").Where(p => p.是否已刪除 == false || p.是否已刪除 == null);
+            return base.All().Include("客戶聯絡人").Where(p => p.是否已刪除 == false || p.是否已刪除 == null );
 
         }
 
